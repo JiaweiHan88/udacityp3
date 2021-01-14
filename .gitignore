@@ -1,4 +1,5 @@
 data
+trainingdata
 .ipynb_checkpoints
 *.h5
 models
