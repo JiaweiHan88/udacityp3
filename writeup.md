@@ -20,9 +20,12 @@ The goals / steps of this project are the following:
 [image3]: ./writeupimage/class_dist.png "class_dist.png"
 [image4]: ./writeupimage/augmented.png "augmented.png"
 [image5]: ./writeupimage/augm_dist.png "augm_dist.png"
-[image6]: ./writeupimage/placeholder.png "Traffic Sign 3"
-[image7]: ./writeupimage/placeholder.png "Traffic Sign 4"
-[image8]: ./writeupimage/placeholder.png "Traffic Sign 5"
+[image6]: ./testimages/attention.png "Traffic Sign 1"
+[image7]: ./testimages/child.png "Traffic Sign 2"
+[image8]: ./testimages/roadwork.png "Traffic Sign 3"
+[image9]: ./testimages/stop.png "Traffic Sign 4"
+[image10]: ./testimages/vorfahrt.png "Traffic Sign 5"
+[image11]: ./writeupimage/results.png "Traffic Sign 5"
 
 ## Rubric Points
 ### Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/481/view) individually and describe how I addressed each point in my implementation.  
@@ -158,8 +161,8 @@ My final model results were:
 
 Here are five German traffic signs that I found on the web:
 
-![alt text][image4] ![alt text][image5] ![alt text][image6] 
-![alt text][image7] ![alt text][image8]
+![alt text][image6] ![alt text][image7] ![alt text][image8] 
+![alt text][image9] ![alt text][image10]
 
 The pictures I found from the web have better quality then most of the training data set. I did not expect difficulties for the classification.
 I could imagine that a classification might be difficult/incorrect in case of heavily warped/distorted images, bad lighting/shadows, partly covered or dirty signs or very low resolution.
@@ -181,6 +184,21 @@ Here are the results of the prediction:
 The model was able to correctly classify 5 of the 5 traffic signs, which gives an accuracy of 100%. Because of the low test samples, the high accuracy is not trustworthy, but indicates that the classifier works well on real world data (data outside of the dataset)
 
 #### 3. Describe how certain the model is when predicting on each of the five new images by looking at the softmax probabilities for each prediction. Provide the top 5 softmax probabilities for each image along with the sign type of each probability. (OPTIONAL: as described in the "Stand Out Suggestions" part of the rubric, visualizations can also be provided such as bar charts)
+
+![alt text][image11]
+
+Softmax prob for the five images above (highest 5) and their respective labels
+
+    [1.0000000e+00, 1.0290601e-20, 6.1712697e-22, 5.9756872e-33, 4.1600515e-34] --> [18, 26, 27, 11, 22]
+
+    [1.0000000e+00, 2.7169181e-19, 2.1926519e-20, 7.1907966e-21, 3.1725194e-22] --> [28, 29, 20, 27, 30]
+
+    [1.0000000e+00, 0.0000000e+00, 0.0000000e+00, 0.0000000e+00, 0.0000000e+00] --> [25,  0,  1,  2,  3]
+       
+    [1.0000000e+00, 0.0000000e+00, 0.0000000e+00, 0.0000000e+00, 0.0000000e+00] --> [17,  0,  1,  2,  3]
+       
+    [1.0000000e+00, 4.3071352e-24, 1.5087655e-25, 5.5242635e-27, 4.4911257e-27] --> [13, 12, 15,  3, 14]
+
 
 The code for making predictions on my final model is located in the 19th cell of the Ipython notebook.
 
