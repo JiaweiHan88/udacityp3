@@ -71,9 +71,8 @@ Here is an example of a traffic sign image before and after conversion.
 
 As a next step, I normalized the image data to increase numerical stability, using very big or small values can add up to a large error. Instead we want our data to have zero mean.
 For image data, (pixel - 128)/ 128 is a quick way to approximately normalize the data. I used another variation where i normalized the data around its mean value.
-(Here i was not sure whether normalizing each image to its local mean or normalizing the whole dataset to its global mean is a better way, used the local approach)
 
-The mean value of the training dataset before normalization was todo and after todo
+The mean value of the training dataset before normalization was 131.34 and afterwards 0.03
 
 I decided to generate additional data because i see a big difference in training data samples for the different classes. I was afraid that this could lead to a bias of the neural network to the classes with high sample count.
 Another reason was to increase robustness of the network and reduce overfitting.
@@ -84,7 +83,7 @@ In addition i added a random offset to the Y channel, which represents a change 
 
 These images could represent the same traffic sign from different camera angles/parameters under different lighting condition.
 
-Here is an example of an original image and an augmented image (with high transformation parameters):
+Here is an example of an original image and an augmented image:
 
 ![alt text][image4]
 
@@ -95,6 +94,7 @@ Initially augmentated images were only generated for classes with low sample cou
 I compared the results with original and augmentated data set and they were virtually the same, i was not sure why the additional data did not lead to higher accuracy.
 Even after increasing the sample count to 5000, i could not see any significant improvements in accuracy.
 Through testing with different transformation parameters i recognized that the coefficients i used to translate and rotate the images were too big. Reducing them led to a much better training progress and accuracy.
+For the final model, i used a training set of 215000 with 5000 sample each class.
 
 #### 2. Describe what your final model architecture looks like including model type, layers, layer sizes, connectivity, etc.) Consider including a diagram and/or table describing the final model.
 
@@ -103,28 +103,28 @@ My final model consisted of the following layers:
 | Layer         		|     Description	        					| 
 |:---------------------:|:---------------------------------------------:| 
 | Input         		| 32x32x1 Y Channel image   							| 
-| Convolution 5x5     	| 1x1 stride, valid padding, outputs 28x28x6 	|
+| Convolution 5x5     	| 1x1 stride, valid padding, outputs 28x28x12 	|
 | RELU					|												|
-| Max pooling	      	| 2x2 stride,  outputs 14x14x6 				|
-| Convolution 5x5	    | 1x1 stride, valid padding, outputs 10x10x16     									|
+| Max pooling	      	| 2x2 stride,  outputs 14x14x12 				|
+| Convolution 5x5	    | 1x1 stride, valid padding, outputs 10x10x32     									|
 | RELU					|												|
-| Max pooling	      	| 2x2 stride,  outputs 5x5x16 (*A) 				|
-| Convolution 5x5	    | 1x1 stride, valid padding, outputs 1x1x400    									|
+| Max pooling	      	| 2x2 stride,  outputs 5x5x32 (*A) 				|
+| Convolution 5x5	    | 1x1 stride, valid padding, outputs 1x1x800    									|
 | RELU					|							(*B) 					|
-| Flatten               | (*A) 5x5x16 = 400 concat with (*B)  1x1x400 = 400	outputs 800		|
+| Flatten               | (*A) 5x5x32 = 800 concat with (*B)  1x1x800 = 800	outputs 1600		|
 | Dropout Layer	      	| 			|
-| Fully connected		| 800 in 100 out	        									|
+| Fully connected		| 1600 in 500 out	        									|
 | Dropout Layer	      	| 			|
-| Fully connected		| 100 in 43 out	        									|
+| Fully connected		| 500 in 200 out	        									|
 | Dropout Layer	      	| 			|
-| Fully connected		| 100 in 43 out	        									|
+| Fully connected		| 200 in 43 out	        									|
  
 
 
 #### 3. Describe how you trained your model. The discussion can include the type of optimizer, the batch size, number of epochs and any hyperparameters such as learning rate.
 
 To train the model, I used an Adam optimizer to minimize the softmax cross entropy loss function. It was used in the class and said to be suitable for this task.
-The model was trained in todo epochs using a batch size of 32. I used an exponential decaying learning rate starting from 0.0005 to receive the best results for my network.
+The model was trained in 30 epochs using a batch size of 32. (Although the accuracy was already almost at max after 15 epoch, just to make sure it wont increase further) I used an exponential decaying learning rate starting from 0.0005 to receive the best results for my network.
 For the dropout i set a keep probability of 0.5 to reduce overfitting.
 
 #### 4. Describe the approach taken for finding a solution and getting the validation set accuracy to be at least 0.93. Include in the discussion the results on the training, validation and test sets and where in the code these were calculated. Your approach may have been an iterative process, in which case, outline the steps you took to get to the final solution and why you chose those steps. Perhaps your solution involved an already well known implementation or architecture. In this case, discuss why you think the architecture is suitable for the current problem.
@@ -146,8 +146,8 @@ With the new architecture and normalized Y channel inputs, i could get a validat
 
 My final model results were:
 * training set accuracy of 1.000
-* validation set accuracy of 0.971 
-* test set accuracy of 0.957
+* validation set accuracy of 0.987 
+* test set accuracy of 0.967
 
 
  
@@ -178,26 +178,20 @@ Here are the results of the prediction:
 
 
 
-The model was able to correctly classify 5 of the 5 traffic signs, which gives an accuracy of 100%. Because of the low test samples, the high accuracy is not trustworthy, but indicates that the classifier works well on real world data
+The model was able to correctly classify 5 of the 5 traffic signs, which gives an accuracy of 100%. Because of the low test samples, the high accuracy is not trustworthy, but indicates that the classifier works well on real world data (data outside of the dataset)
 
 #### 3. Describe how certain the model is when predicting on each of the five new images by looking at the softmax probabilities for each prediction. Provide the top 5 softmax probabilities for each image along with the sign type of each probability. (OPTIONAL: as described in the "Stand Out Suggestions" part of the rubric, visualizations can also be provided such as bar charts)
 
-The code for making predictions on my final model is located in the 11th cell of the Ipython notebook.
+The code for making predictions on my final model is located in the 19th cell of the Ipython notebook.
 
-For the first image, the model is relatively sure that this is a stop sign (probability of 0.6), and the image does contain a stop sign. The top five soft max probabilities were
+For all the images the softmax probability was at 100 or near 100%. For image 3, 4, the softmax prob was flat zero except for the correctly predicted class.
+For the other images, we have a near zero probability for the 2nd and following class, which represents classes with similarities compared to the ground truth class as can be seen in the Ipython notebook.
+As all the probabilities are ~100%, i did not include a bar chart and also left the 5th class out (since the prob for the 2nd is already ~0).
 
-| Probability         	|     Prediction	        					| 
-|:---------------------:|:---------------------------------------------:| 
-| .60         			| Stop sign   									| 
-| .20     				| U-turn 										|
-| .05					| Yield											|
-| .04	      			| Bumpy Road					 				|
-| .01				    | Slippery Road      							|
-
-
-For the second image ... 
+This means that our model is pretty confident in the prediction of my images, it would be nice to find more traffic signs and find examples where our model fail or have multiple classes as candidates.
+We could try to find images for the speedlimits or beware of ice/snow, which were revealed in the confusion matrix to be less accurate.
 
 ### (Optional) Visualizing the Neural Network (See Step 4 of the Ipython notebook for more details)
 #### 1. Discuss the visual output of your trained network's feature maps. What characteristics did the neural network use to make classifications?
 
-
+A visual output is shown in the Ipython notebook.
